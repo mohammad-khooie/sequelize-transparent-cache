@@ -27,7 +27,7 @@ function buildAutoMethods(client, model) {
     },
     upsert(data) {
       return model.upsert.apply(model, arguments).then(created => {
-        return cache.save(client, model.build(data))
+        return cache.destroy(client, model.build(data))
           .then(() => created)
       })
     },

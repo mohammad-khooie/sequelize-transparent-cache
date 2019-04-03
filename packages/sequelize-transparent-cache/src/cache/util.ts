@@ -1,8 +1,8 @@
-function instanceToData (instance) {
+export function instanceToData(instance) {
   return instance.get({ plain: true })
 }
 
-function dataToInstance (model, data) {
+export function dataToInstance(model, data) {
   if (!data) {
     return data
   }
@@ -29,7 +29,7 @@ function dataToInstance (model, data) {
   return instance
 }
 
-function loadAssociations (model) {
+function loadAssociations(model) {
   const associations = []
 
   Object.keys(model.associations).forEach((key) => {
@@ -44,9 +44,4 @@ function loadAssociations (model) {
   })
 
   return associations
-}
-
-module.exports = {
-  instanceToData,
-  dataToInstance
 }

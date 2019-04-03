@@ -1,15 +1,12 @@
-const sequelize = require('../../test/helpers/sequelize')
+import { User, Article, Comment, sequelize } from '../../test/helpers/sequelize'
 
-const User = sequelize.models.User
-const Article = sequelize.models.Article
-const Comment = sequelize.models.Comment
 const cacheStore = User.cache().client().store
 
 beforeAll(() => sequelize.sync())
 
 describe('Class methods', () => {
 
-  expect(cacheStore).toEqual({}, 'Cache is empty on start')
+  expect(cacheStore).toEqual({}) // Cache is empty on start
 
   test('Create', async () => {
     const user = await User.cache().create({
@@ -30,25 +27,29 @@ describe('Class methods', () => {
       body: 'New comment'
     })
 
+    // User with default primary key cached after create
     expect(cacheStore.User[1]).toEqual(
-      user.get(),
-      'User with default primary key cached after create'
+      user.get()
     )
+
+    // Entity with custom primary key cached after create
     expect(cacheStore.Article[article.uuid]).toEqual(
-      article.get(),
-      'Entity with custom primary key cached after create'
+      article.get()
     )
+
+    // Entity with composite primary keys cached after create
     expect(cacheStore.Comment[`${comment.userId},${comment.articleUuid}`]).toEqual(
-      comment.get(),
-      'Entity with composite primary keys cached after create'
+      comment.get()
     )
+
+    // Cached user with primary key correctly loaded
     expect((await User.cache().findByPk(1)).get()).toEqual(
-      user.get(),
-      'Cached user with primary key correctly loaded'
+      user.get()
     )
+
+    // Cached entity correctly loaded using custom primary key
     expect((await Article.cache().findByPk(article.uuid)).get()).toEqual(
       article.get(),
-      'Cached entity correctly loaded using custom primary key'
     )
   })
 
@@ -60,18 +61,19 @@ describe('Class methods', () => {
       name: 'Ivan'
     })
 
+    // Timestamps synced after upsert
     expect((await User.cache().findByPk(1)).get()).toEqual(
       (await User.findByPk(1)).get(),
-      'Timestamps synced after upsert'
     )
 
     await user.cache().reload()
 
-    expect(user.name).toBe('Ivan', 'User name was updated')
+    // User name was updated
+    expect(user.name).toBe('Ivan')
 
+    // User cached after upsert
     expect(cacheStore.User[1]).toEqual(
       user.get({ plain: true }), // TODO fix loading superfluous data
-      'User cached after upsert'
     )
   })
 
@@ -86,18 +88,18 @@ describe('Class methods', () => {
       return user.get().Articles[0].get().uuid
     }
 
+    // Retrieved user with Article association
     expect(await getQuery()).toBe(
-      await getQuery(),
-      'Retrieved user with Article association'
+      await getQuery()
     )
   })
 
   test('cache -> findAll', async () => {
     const missingUsers = await User.cache('missingKey1').findAll({ where: { name: 'Not existent' } })
 
+    // Cache miss not causing any problem
     expect(missingUsers).toEqual(
-      [],
-      'Cache miss not causing any problem'
+      []
     )
 
     const key = 'IvanUserCacheKey1'
@@ -110,14 +112,14 @@ describe('Class methods', () => {
     const [cacheHit] = await User.cache(key).findAll(getQuery())
     const [dbValue] = await User.findAll(getQuery())
 
+    // Returned value is the same, not matter if cache hit or miss
     expect(cacheMiss.get().Articles[0].get().uuid).toBe(
       cacheHit.get().Articles[0].get().uuid,
-      'Returned value is the same, not matter if cache hit or miss'
     )
 
+    // 'Returned value is the same, as in db'
     expect(cacheHit.get().Articles[0].get().uuid).toBe(
       dbValue.get().Articles[0].get().uuid,
-      'Returned value is the same, as in db'
     )
   })
 
@@ -136,14 +138,14 @@ describe('Class methods', () => {
     const cacheHit = await User.cache(key).findOne(getQuery())
     const dbValue = await User.findOne(getQuery())
 
+    // Returned value is the same, not matter if cache hit or miss
     expect(cacheMiss.get().Articles[0].get().uuid).toBe(
       cacheHit.get().Articles[0].get().uuid,
-      'Returned value is the same, not matter if cache hit or miss'
     )
 
+    // Returned value is the same, as in db
     expect(cacheHit.get().Articles[0].get().uuid).toBe(
-      dbValue.get().Articles[0].get().uuid,
-      'Returned value is the same, as in db'
+      dbValue.get().Articles[0].get().uuid
     )
   })
 
@@ -152,9 +154,9 @@ describe('Class methods', () => {
     const cacheStore = User.cache().client().store
     const manualTest = await User.cache(key).findOne({ where: { name: 'Ivan' } })
 
+    // User cached after find and present in key using cache store
     expect(cacheStore.User[key]).toEqual(
-      manualTest.get(),
-      'User cached after find and present in key using cache store'
+      manualTest.get()
     )
   })
 
@@ -162,9 +164,9 @@ describe('Class methods', () => {
     const key = 'ClearUserCacheKey'
     const manualTest = await User.cache(key).findOne({ where: { name: 'Ivan' } })
 
+    // User cached after find and present in key
     expect(cacheStore.User[key]).toEqual(
-      manualTest.get(),
-      'User cached after find and present in key'
+      manualTest.get()
     )
 
     await User.cache(key).clear()

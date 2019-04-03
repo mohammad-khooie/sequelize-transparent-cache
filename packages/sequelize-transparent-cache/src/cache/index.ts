@@ -1,4 +1,4 @@
-const { instanceToData, dataToInstance } = require('./util')
+import { instanceToData, dataToInstance } from './util'
 
 function getInstanceModel(instance) {
   return instance.constructor
@@ -8,7 +8,7 @@ function getInstanceCacheKey(instance) {
   return getInstanceModel(instance).primaryKeyAttributes.map(pk => instance[pk])
 }
 
-function save(client, instance, customKey) {
+export function save(client, instance, customKey?) {
   if (!instance) {
     return instance
   }
@@ -26,7 +26,7 @@ function save(client, instance, customKey) {
   return client.set(key, instanceToData(instance)).then(() => instance)
 }
 
-function saveAll(client, model, instances, customKey) {
+export function saveAll(client, model, instances, customKey) {
   const key = [
     model.name,
     customKey
@@ -35,7 +35,7 @@ function saveAll(client, model, instances, customKey) {
   return client.set(key, instances.map(instanceToData)).then(() => instances)
 }
 
-function getAll(client, model, customKey) {
+export function getAll(client, model, customKey) {
   const key = [
     model.name,
     customKey
@@ -50,7 +50,7 @@ function getAll(client, model, customKey) {
   })
 }
 
-function get(client, model, id) {
+export function get(client, model, id) {
   const key = [
     model.name,
     id
@@ -61,7 +61,7 @@ function get(client, model, id) {
   })
 }
 
-function destroy(client, instance) {
+export function destroy(client, instance) {
   if (!instance) {
     return instance
   }
@@ -73,19 +73,10 @@ function destroy(client, instance) {
   return client.del(key)
 }
 
-function clearKey(client, model, customKey) {
+export function clearKey(client, model, customKey) {
   const key = [
     model.name,
     customKey
   ]
   return client.del(key)
-}
-
-module.exports = {
-  save,
-  saveAll,
-  get,
-  getAll,
-  destroy,
-  clearKey
 }

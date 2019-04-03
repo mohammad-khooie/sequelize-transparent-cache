@@ -1,30 +1,28 @@
-const cache = require('../cache')
+import * as cache from '../cache'
 
-function instanceMethods (client, instance) {
+export function buildInstanceMethods(client, instance) {
   return {
-    client () { return client },
-    save () {
+    client() { return client },
+    save() {
       return instance.save.apply(instance, arguments)
         .then(instance => cache.save(client, instance))
     },
-    update () {
+    update() {
       return instance.update
         .apply(instance, arguments)
         .then(instance => cache.save(client, instance))
     },
-    reload () {
+    reload() {
       return instance.reload
         .apply(instance, arguments)
         .then(instance => cache.save(client, instance))
     },
-    destroy () {
+    destroy() {
       return instance.destroy.apply(instance, arguments)
         .then(() => cache.destroy(client, instance))
     },
-    clear () {
+    clear() {
       return cache.destroy(client, instance)
     }
   }
 }
-
-module.exports = instanceMethods

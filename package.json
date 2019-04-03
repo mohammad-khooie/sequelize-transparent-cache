@@ -6,24 +6,19 @@
 		"posttest": "codecov"
 	},
 	"devDependencies": {
+		"@types/jest": "^24.0.11",
+		"@types/node": "^11.11.5",
 		"codecov": "^3.1.0",
-		"eslint": "^5.15.3",
-		"eslint-config-standard": "^12.0.0",
-		"eslint-plugin-import": "^2.2.0",
-		"eslint-plugin-node": "^8.0.0",
-		"eslint-plugin-promise": "^4.0.0",
-		"eslint-plugin-standard": "^4.0.0",
 		"jest": "^24.5.0",
-		"lerna": "^3.11.0"
-	},
-	"eslintConfig": {
-		"extends": "standard"
+		"lerna": "^3.11.0",
+		"prettier": "1.16.4",
+		"ts-jest": "^24.0.0",
+		"typescript": "^3.4.3",
+		"@types/sequelize": "^4.27.44"
 	},
 	"jest": {
+		"testEnvironment": "node",
 		"collectCoverage": true,
-		"testPathIgnorePatterns": [
-			"/node_modules/"
-		]
-	},
-	"dependencies": {}
+		"preset": "ts-jest"
+	}
 }

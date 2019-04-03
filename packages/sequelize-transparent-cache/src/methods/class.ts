@@ -1,6 +1,6 @@
-const cache = require('../cache')
+import * as cache from '../cache'
 
-function buildAutoMethods(client, model) {
+export function auto(client, model) {
   return {
     client() {
       return client
@@ -37,7 +37,7 @@ function buildAutoMethods(client, model) {
   }
 }
 
-function buildManualMethods(client, model, customKey) {
+export function manual(client, model, customKey) {
   return {
     client() {
       return client
@@ -69,5 +69,3 @@ function buildManualMethods(client, model, customKey) {
     }
   }
 }
-
-module.exports = { auto: buildAutoMethods, manual: buildManualMethods }

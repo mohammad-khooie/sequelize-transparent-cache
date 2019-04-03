@@ -1,13 +1,13 @@
-const sequelize = require('../../test/helpers/sequelize')
+import { sequelize, User } from '../../test/helpers/sequelize'
 
-const User = sequelize.models.User
 const cacheStore = User.cache().client().store
 
 beforeAll(() => sequelize.sync())
 
 describe('Instance methods', () => {
 
-  expect(cacheStore).toEqual({}, 'Cache is empty on start')
+  // Cache is empty on start
+  expect(cacheStore).toEqual({})
 
   const user = User.build({
     id: 1,
@@ -17,14 +17,14 @@ describe('Instance methods', () => {
   test('Create', async () => {
     await user.cache().save()
 
+    // User cached after create
     expect(cacheStore.User[1]).toEqual(
       user.get(),
-      'User cached after create'
     )
 
+    // Cached user correctly loaded
     expect((await User.cache().findByPk(1)).get()).toEqual(
       user.get(),
-      'Cached user correctly loaded'
     )
   })
 
@@ -33,18 +33,19 @@ describe('Instance methods', () => {
       name: 'Dmitry'
     })
 
-    expect(user.name).toBe('Dmitry', 'User name was updated')
+    // User name was updated
+    expect(user.name).toBe('Dmitry')
 
+    // User cached after upsert
     expect(cacheStore.User[1]).toEqual(
       user.get(),
-      'User cached after upsert'
     )
   })
 
   test('Clear', async () => {
+    // Cached user correctly loaded
     expect((await User.cache().findByPk(1)).get()).toEqual(
       user.get(),
-      'Cached user correctly loaded'
     )
     await user.cache().clear()
 

@@ -8,9 +8,7 @@ function dataToInstance (model, data) {
   }
   let include = []
 
-  if (model.associations) {
-    include = loadAssociations(model)
-  }
+  // this section is deleted
 
   const instance = model.build(data, { isNewRecord: false, include })
 

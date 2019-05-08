@@ -1,1 +1,1 @@
-./packages/sequelize-transparent-cache/README.md
+sequelize-transparent-cache for personal usage

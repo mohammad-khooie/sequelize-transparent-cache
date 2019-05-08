@@ -1,5 +1,5 @@
-const buildClassMethods = require('./methods/class')
-const buildInstanceMethods = require('./methods/instance')
+const buildClassMethods = require('./lib/methods/class')
+const buildInstanceMethods = require('./lib/methods/instance')
 
 module.exports = client => ({
   withCache (modelClass) {

@@ -1,16 +1,27 @@
 {
-	"name": "sequelize-transparent-cache",
-	"devDependencies": {
-		"codecov": "^3.1.0",
-		"eslint": "^5.5.0",
-		"eslint-config-standard": "^12.0.0",
-		"eslint-plugin-import": "^2.2.0",
-		"eslint-plugin-node": "^8.0.0",
-		"eslint-plugin-promise": "^4.0.0",
-		"eslint-plugin-standard": "^4.0.0"
-	},
-	"eslintConfig": {
-		"extends": "standard"
-	},
-	"version": "2.0.1"
+  "name": "sequelize-transparent-cache",
+  "version": "2.0.3",
+  "description": "Simple to use and universal cache layer for Sequelize",
+  "main": "src/index.js",
+  "keywords": [
+    "sequelize",
+    "cache",
+    "plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DanielHreben/sequelize-transparent-cache.git"
+  },
+  "author": {
+    "name": "Daniel Hreben",
+    "email": "daniel.hreben@gmail.com"
+  },
+  "license": "CC-BY-4.0",
+  "peerDependencies": {
+    "sequelize": ">=4.0.0"
+  },
+  "devDependencies": {
+    "sequelize": ">=4.0.0",
+    "sqlite3": "^4.0.6"
+  }
 }

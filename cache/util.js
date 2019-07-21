@@ -6,11 +6,8 @@ function dataToInstance (model, data) {
   if (!data) {
     return data
   }
-  let include = []
 
-  // this section is deleted
-
-  const instance = model.build(data, { isNewRecord: false, include })
+  const instance = model.build(data, { isNewRecord: false })
 
   if (data.updatedAt) {
     instance.setDataValue('updatedAt', data.updatedAt)
@@ -33,7 +30,7 @@ function loadAssociations (model) {
   Object.keys(model.associations).forEach((key) => {
     //  model.associations[key] does not work on include, we grab it from sequelize.model()
     if (model.associations[key].hasOwnProperty('options')) {
-      const modelName = model.associations[key].options.name.singular
+      const modelName = model.associations[key].target.name
       associations.push({
         model: model.sequelize.model(modelName),
         as: key

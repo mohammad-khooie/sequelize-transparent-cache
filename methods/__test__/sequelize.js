@@ -1,9 +1,9 @@
-const VariableAdaptor = require('sequelize-transparent-cache/test/helpers/node_modules/sequelize-transparent-cache-variable')
+const VariableAdaptor = require('../../../../sequelize-transparent-cache-variable')
 const variableAdaptor = new VariableAdaptor()
 
-const sequelizeCache = require('sequelize-transparent-cache')
+const sequelizeCache = require('../..')
 
-const Sequelize = require('sequelize-transparent-cache/test/helpers/node_modules/sequelize')
+const Sequelize = require('sequelize')
 
 const options = {
   logging: false,
@@ -16,6 +16,24 @@ const options = {
 const sequelize = new Sequelize(options)
 
 sequelize.define('User', {
+  name: {
+    allowNull: false,
+    type: Sequelize.STRING
+  }
+})
+
+sequelize.define('UserGroup', {
+  user_id: {
+    allowNull: false,
+    type: Sequelize.INTEGER
+  },
+  group_id: {
+    allowNull: false,
+    type: Sequelize.INTEGER
+  }
+})
+
+sequelize.define('Group', {
   name: {
     allowNull: false,
     type: Sequelize.STRING
@@ -55,8 +73,25 @@ const { withCache } = sequelizeCache(variableAdaptor)
 withCache(sequelize.models.User)
 withCache(sequelize.models.Article)
 withCache(sequelize.models.Comment)
+withCache(sequelize.models.Group)
 
 sequelize.model('User').hasMany(sequelize.model('Article'), { as: 'Articles' })
-sequelize.model('Article').belongsTo(sequelize.model('User'), { as: 'User' })
+sequelize.model('Article').belongsTo(sequelize.model('User'), { as: 'Author' })
+sequelize.model('User').belongsToMany(sequelize.model('Group'), {
+  through: {
+    model: sequelize.model('UserGroup'),
+    unique: false
+  },
+  foreignKey: 'user_id',
+  as: 'userGroups'
+})
+sequelize.model('Group').belongsToMany(sequelize.model('User'), {
+  through: {
+    model: sequelize.model('UserGroup'),
+    unique: false
+  },
+  foreignKey: 'group_id',
+  as: 'groupUsers'
+})
 
 module.exports = sequelize
